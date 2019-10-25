@@ -2,10 +2,12 @@
 
 module Enumerable
   def my_each
-    i = 0
-    while i < size
-      yield(self[i])
-      i += 1
+    if block_given?
+      (0..length - 1).each do |i|
+        yield(self[i])
+      end
+    else
+      puts "You didn't send a block in"
     end
   end
 
