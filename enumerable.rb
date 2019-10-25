@@ -12,51 +12,71 @@ module Enumerable
   end
 
   def my_each_with_index
-    i = 0
-    while i < size
-      yield(self[i], i)
-      i += 1
+    if block_given?
+      (0..length - 1).each do |i|
+        yield(self[i], i)
+      end
+    else
+      puts "You didn't send a block in"
     end
   end
 
   def my_select
-    i = 0
-    array2 = []
-    while i < size
-      array2 << self[i] if yield(self[i])
-      i += 1
+    if block_given?
+      new_arr = []
+      (0..length - 1).each do |i|
+        new_arr.push(self[i]) if yield(self[i])
+      end
+      puts new_arr
+
+    else
+      puts "You didn't send a block in"
     end
-    array2
   end
 
   def my_all?
-    i = 0
-    while i < size
-      return false unless yield(self[i])
+    if block_given?
+      result = true
+      (0..length - 1).each do |i|
+        next if yield(self[i])
 
-      i += 1
+        result = false
+      end
+    else
+      "You didn't send a block in"
     end
-    true
+
+    puts result
   end
 
   def my_any?
-    i = 0
-    while i < size
-      return true if yield(self[i])
+    if block_given?
+      result = false
+      (0..length - 1).each do |i|
+        next unless yield(self[i])
 
-      i += 1
+        result = true
+      end
+    else
+      "You didn't send a block in"
     end
-    false
+
+    puts result
   end
 
   def my_none?
-    i = 0
-    while i < size
-      return false if yield(self[i])
+    if block_given?
+      result = true
+      (0..length - 1).each do |i|
+        next unless yield(self[i])
 
-      i += 1
+        result = false
+      end
+    else
+      "You didn't send a block in"
     end
-    true
+
+    puts result
   end
 
   def my_count(val = "NoNArG")
@@ -82,27 +102,50 @@ module Enumerable
     count
   end
 
-  def my_map(&proc)
-    i = 0
-    array2 = []
-    while i < size
-      array2 << if block_given?
-                  yield(self[i])
-                else
-                  proc.call(self[i])
-                end
-      i += 1
+  def my_map
+    if block_given?
+      result = []
+      (0..length - 1).each do |i|
+        result.push(yield(self[i]))
+      end
+    else
+      result = self
     end
-    array2
+
+    result
   end
 
-  def my_inject(start = 0)
-    i = 0
-    accumulator = start
-    while i < size
-      accumulator = yield(accumulator, self[i])
-      i += 1
+  def my_inject(startval = nil, symbol = nil)
+    if block_given?
+
+      if !startval.nil?
+        result = startval
+
+      else
+        result = self[0]
+        shift
+
+      end
+      my_each do |element|
+        result = yield(result, element)
+      end
+      result
+    elsif !startval.nil? && !symbol.nil?
+      result = startval
+      my_each do |element|
+        result = result.send(symbol, element)
+      end
+      result
+    elsif !startval.nil? && symbol.nil?
+      result = self[0]
+      shift
+      my_each do |element|
+        result = result.send(startval, element)
+      end
+      result
+
+    else
+      "You didn't provide the correct parameters"
     end
-    accumulator
   end
 end
