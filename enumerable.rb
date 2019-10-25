@@ -79,4 +79,18 @@ module Enumerable
 
     count
   end
+
+  def my_map(&proc)
+    i = 0
+    array2 = []
+    while i < size
+      array2 << if block_given?
+                  yield(self[i])
+                else
+                  proc.call(self[i])
+                end
+      i += 1
+    end
+    array2
+  end
 end
