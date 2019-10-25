@@ -93,4 +93,14 @@ module Enumerable
     end
     array2
   end
+
+  def my_inject(start = 0)
+    i = 0
+    accumulator = start
+    while i < size
+      accumulator = yield(accumulator, self[i])
+      i += 1
+    end
+    accumulator
+  end
 end
