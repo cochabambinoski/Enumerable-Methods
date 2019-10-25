@@ -46,4 +46,15 @@ module Enumerable
     end
     false
   end
+
+  def my_none?
+    i = 0
+    while i < self.size
+        if yield(self[i])
+            return false
+        end
+        i += 1
+    end
+    true
+  end
 end
