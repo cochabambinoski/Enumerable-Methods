@@ -49,12 +49,34 @@ module Enumerable
 
   def my_none?
     i = 0
-    while i < self.size
-        if yield(self[i])
-            return false
-        end
-        i += 1
+    while i < size
+      return false if yield(self[i])
+
+      i += 1
     end
     true
+  end
+
+  def my_count(val = "NoNArG")
+    count = 0
+    if block_given?
+
+      (0..length - 1).each do |i|
+        next unless yield(self[i])
+
+        count += 1
+      end
+
+    elsif val != "NoNArG"
+
+      (0..length - 1).each do |i|
+        count += 1 if self[i] == val
+      end
+
+    else
+      count = length
+    end
+
+    count
   end
 end
