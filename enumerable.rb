@@ -36,4 +36,14 @@ module Enumerable
     end
     true
   end
+
+  def my_any?
+    i = 0
+    while i < size
+      return true if yield(self[i])
+
+      i += 1
+    end
+    false
+  end
 end
