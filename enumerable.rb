@@ -2,114 +2,93 @@
 
 module Enumerable
   def my_each
-    if block_given?
-      (0..length - 1).each do |i|
-        yield(self[i])
-      end
-    else
-      puts "You didn't send a block in"
+    return to_enum unless block_given?
+
+    (0..length - 1).each do |i|
+      yield(self[i])
     end
   end
 
   def my_each_with_index
-    if block_given?
-      (0..length - 1).each do |i|
-        yield(self[i], i)
-      end
-    else
-      puts "You didn't send a block in"
+    return to_enum unless block_given?
+
+    (0..length - 1).each do |i|
+      yield(self[i], i)
     end
   end
 
   def my_select
-    if block_given?
-      new_arr = []
-      (0..length - 1).each do |i|
-        new_arr.push(self[i]) if yield(self[i])
-      end
-      puts new_arr
+    return to_enum unless block_given?
 
-    else
-      puts "You didn't send a block in"
+    new_arr = []
+    (0..length - 1).each do |i|
+      new_arr.push(self[i]) if yield(self[i])
     end
+    new_arr
   end
 
   def my_all?
-    if block_given?
-      result = true
-      (0..length - 1).each do |i|
-        next if yield(self[i])
+    return to_enum unless block_given?
 
-        result = false
-      end
-    else
-      "You didn't send a block in"
+    result = true
+    (0..length - 1).each do |i|
+      next if yield(self[i])
+
+      result = false
     end
 
-    puts result
+    result
   end
 
   def my_any?
-    if block_given?
-      result = false
-      (0..length - 1).each do |i|
-        next unless yield(self[i])
+    return to_enum unless block_given?
 
-        result = true
-      end
-    else
-      "You didn't send a block in"
+    result = false
+    (0..length - 1).each do |i|
+      next unless yield(self[i])
+
+      result = true
     end
-
-    puts result
+    result
   end
 
   def my_none?
-    if block_given?
-      result = true
-      (0..length - 1).each do |i|
-        next unless yield(self[i])
+    return to_enum unless block_given?
 
-        result = false
-      end
-    else
-      "You didn't send a block in"
+    result = true
+    (0..length - 1).each do |i|
+      next unless yield(self[i])
+
+      result = false
     end
-
-    puts result
+    result
   end
 
   def my_count(val = "NoNArG")
     count = 0
-    if block_given?
+    return to_enum unless block_given?
 
-      (0..length - 1).each do |i|
-        next unless yield(self[i])
+    (0..length - 1).each do |i|
+      next unless yield(self[i])
 
-        count += 1
-      end
-
-    elsif val != "NoNArG"
+      count += 1
+    end
+    if val != "NoNArG"
 
       (0..length - 1).each do |i|
         count += 1 if self[i] == val
       end
-
-    else
-      count = length
     end
 
     count
   end
 
   def my_map
-    if block_given?
-      result = []
-      (0..length - 1).each do |i|
-        result.push(yield(self[i]))
-      end
-    else
-      result = self
+    return to_enum unless block_given?
+
+    result = []
+    (0..length - 1).each do |i|
+      result.push(yield(self[i]))
     end
 
     result
@@ -137,7 +116,7 @@ module Enumerable
       end
       result
     elsif !startval.nil? && symbol.nil?
-      result = self[0]
+      result = self[1]
       shift
       my_each do |element|
         result = result.send(startval, element)
