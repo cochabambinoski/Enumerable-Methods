@@ -139,6 +139,17 @@ module Enumerable
     count
   end
 
+  def my_map(proc = nil)
+    return_array = []
+    return to_enum :my_map if !block_given? && proc.nil?
+
+    to_a.my_each do |i|
+      return_array.push(proc.call(i)) unless proc.nil?
+      return_array.push(yield(i)) if block_given? && proc.nil?
+    end
+    return_array
+  end
+
   def my_inject(*args)
     sum = 0
     wsum = ""
@@ -151,9 +162,9 @@ module Enumerable
     elsif args.empty? && block_given?
       to_a.my_each do |element|
         if element.is_a?(Integer)
-          i.zero ? sum += element : sum = yield(sum, element)
+          i == 0 ? sum += element : sum = yield(sum, element)
         else
-          i.zero ? wsum += element : wsum = yield(wsum, element)
+          i == 0 ? wsum += element : wsum = yield(wsum, element)
         end
         i += 1
       end
@@ -168,14 +179,14 @@ module Enumerable
 
       if args[0].is_a?(Symbol)
         to_a.my_each do |element|
-          i.zero ? sum += element : sum = sum.method(args[0]).call(element)
+          i == 0 ? sum += element : sum = sum.method(args[0]).call(element)
           i += 1
         end
       elsif args[0].is_a?(String)
         operators = %i[+ - * / == =~]
         if operators.my_any? { |o| o == args[0].to_sym }
           my_each do |element|
-            i.zero ? sum += element : sum = sum.method(args[0].to_sym).call(element)
+            i == 0 ? sum += element : sum = sum.method(args[0].to_sym).call(element)
             i += 1
           end
         else
